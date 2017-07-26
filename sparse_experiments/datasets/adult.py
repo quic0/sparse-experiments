@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
-import os
 
-from ..utils.data_utils import get_file, _extract_archive
+from ..utils.data_utils import get_file
 
 
 def load_data():
@@ -46,14 +45,3 @@ def load_data():
                       ), axis=1).values
 
     return (data, labels)
-
-    #
-    # labels = data[:, -1]
-    # data = data[:, :-1]
-    #
-    # data_missing = np.isnan(data)
-    #
-    # data = np.concatenate((data, data_missing), axis=1)
-    # data = np.where(np.isnan(data), 0, data)
-    #
-    # return (data, labels)
