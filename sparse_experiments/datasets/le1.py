@@ -1,8 +1,6 @@
 import numpy as np
-import zipfile
-import os
 
-from ..utils.data_utils import get_file, _extract_archive
+from ..utils.data_utils import get_file
 
 
 def load_data(path='letter-recognition.data', targetLabel=1):
