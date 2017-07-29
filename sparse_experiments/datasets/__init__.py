@@ -6,3 +6,5 @@ from . import adult
 from . import neuron
 from . import ringnorm
 from . import checker
+from . import bow1
+from . import bow2
