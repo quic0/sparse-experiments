@@ -6,20 +6,23 @@ from ..utils.data_utils import get_file
 
 def load_data(path='ringnorm.data'):
     path = os.path.expanduser(os.path.join('~', '.sparse', 'datasets', path))
-    print('Download manually from: https://drive.google.com/uc?' +
-          'id=0B409u1yNB1l3TW04TDV2YXExaTQ&export=download')
-    print('Save file as: %s' % path)
+    if os.path.exists(path):
+        data = np.genfromtxt(path, delimiter=",", dtype=np.float)
 
-    # Can't use get_file due to Google auth
-    # path = get_file('ringnorm.data', origin='https://drive.google.com/uc?' +
-    #                 'id=0B409u1yNB1l3TW04TDV2YXExaTQ&export=download',
-    #                 extract=False)
+        # labels are in last column
+        labels = data[:, -1]
 
-    data = np.genfromtxt(path, delimiter=",", dtype=np.float)
+        data = data[:, :-1]
 
-    # labels are in last column
-    labels = data[:, -1]
+        return (data, labels)
+    else:
+        print('Download manually from: https://drive.google.com/uc?' +
+              'id=0B409u1yNB1l3TW04TDV2YXExaTQ&export=download')
+        print('Save file as: %s' % path)
 
-    data = data[:, :-1]
+        # Can't use get_file due to Google auth
+        # path = get_file('ringnorm.data', origin='https://drive.google.com/uc?' +
+        #                 'id=0B409u1yNB1l3TW04TDV2YXExaTQ&export=download',
+        #                 extract=False)
 
-    return (data, labels)
+        return (None, None)
