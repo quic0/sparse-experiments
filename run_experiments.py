@@ -11,7 +11,7 @@ def serialize(x):
 #%%
 results_file = 'results.json'
 
-repetitions = 10
+repetitions = 5
 
 gridResolutions = {
     'neuron': [2, 5, 10, 25, 50, 100],
@@ -81,7 +81,7 @@ for dataset in datasets:
                         sc = sparsifier(dimReducer=apca, gridResolution=gridRes)
 
                     start = timer()
-                    pairs = sc.get_similar_indices(features, statistics=True)
+                    pairs = sc.get_similar_indices(features, statistics=True, seed = i+1)
                     end = timer()
 
                     dict_append(exp_result, 'time', end-start)
@@ -94,7 +94,7 @@ for dataset in datasets:
                 exp_result['status'] = 'failed'
             set_key(results, [serialize(dataset), serialize(sparsifier), gridRes], exp_result)
 
-    # dump results
-    with open(results_file, 'w') as f:
-        json.dump(results, f)
+            # dump results
+            with open(results_file, 'w') as f:
+                json.dump(results, f)
 #%%
