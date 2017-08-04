@@ -86,6 +86,7 @@ for dataset in datasets:
 
                     dict_append(exp_result, 'time', end-start)
                     dict_append(exp_result, 'pairs', len(pairs))
+                    del pairs
                     for key, val in sc.stats.items():
                         dict_append(exp_result, key, val)
 
