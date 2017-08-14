@@ -41,8 +41,7 @@ gridResolutions = {
     'ringnorm': [250, 500, 1000, 2000, 5000]
 }
 
-#datasets = [neuron, le1, bow1, adult, covertype, checker, rlc, bow2, ringnorm]
-datasets = [covertype]
+datasets = [neuron, le1, bow1, adult, covertype, checker, rlc, bow2, ringnorm]
 
 sparsifiers = [SparseComputation, SparseShiftedComputation, SparseHybridComputation]
 
