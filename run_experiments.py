@@ -32,7 +32,6 @@ repetitions = 5
 gridResolutions = {
     'neuron': [2, 5, 10, 25, 50, 100],
     'le1': [2, 5, 10, 25, 50, 100],
-    'le2': [2, 5, 10, 25, 50, 100],
     'bow1': [10, 25, 50, 100, 250, 500, 1000],
     'adult': [10, 25, 50, 100, 250, 500, 1000],
     'covertype': [50, 100, 250, 500, 1000],
@@ -42,21 +41,21 @@ gridResolutions = {
     'ringnorm': [250, 500, 1000, 2000, 5000]
 }
 
-datasets = [neuron, le1, le2, bow1, adult, covertype, checker, rlc, bow2, ringnorm]
+#datasets = [neuron, le1, bow1, adult, covertype, checker, rlc, bow2, ringnorm]
+datasets = [covertype]
 
 sparsifiers = [SparseComputation, SparseShiftedComputation, SparseHybridComputation]
 
 low_dim = {
-    'covertype': 3,
-    'rlc': 3,
-    'adult': 3,
-    'le1': 3,
-    'le2': 3,
-    'neuron': 3,
-    'ringnorm': 3,
-    'checker': 2,
-    'bow1': 3,
-    'bow2': 3
+    'covertype': [2,3,4],
+    'rlc': [3],
+    'adult': [3],
+    'le1': [3],
+    'neuron': [3],
+    'ringnorm': [3],
+    'checker': [2],
+    'bow1': [3],
+    'bow2': [3]
 }
 #%%
 # helper functions
@@ -77,7 +76,6 @@ results = {}
 for dataset in datasets:
     print('Loading dataset: %s' % serialize(dataset))
     sys.stdout.flush()
-    apca = ApproximatePCA(dimLow = low_dim[serialize(dataset)], fracRow=0.01, fracCol=0.05, minRow=150, minCol=150)
     features, labels = dataset.load_data()
     # Remove duplicates
     sorted_idx = np.lexsort(features.T)
@@ -85,33 +83,36 @@ for dataset in datasets:
     row_mask = np.append([True],np.any(np.diff(sorted_data,axis=0),1))
     features = sorted_data[row_mask]
     for sparsifier in sparsifiers:
-        for gridRes in gridResolutions[serialize(dataset)]:
-            print('Running dataset: %s, sparsifier %s, grid resolution: %d' % (serialize(dataset), serialize(sparsifier), gridRes))
-            sys.stdout.flush()
-            exp_result = {}
-            try:
-                for i in range(repetitions):
-                    if sparsifier==SparseComputation:
-                        sc = sparsifier(dimReducer=apca, gridResolution=gridRes*2)
-                    else:
-                        sc = sparsifier(dimReducer=apca, gridResolution=gridRes)
+        for n_dim in low_dim[serialize(dataset)]:
+            apca = ApproximatePCA(dimLow = n_dim, fracRow=0.01, fracCol=0.05, minRow=150, minCol=150)
 
-                    start = timer()
-                    pairs = sc.get_similar_indices(features, statistics=True, seed = i+1)
-                    end = timer()
+            for gridRes in gridResolutions[serialize(dataset)]:
+                print('Running dataset: %s, sparsifier %s, grid resolution: %d' % (serialize(dataset), serialize(sparsifier), gridRes))
+                sys.stdout.flush()
+                exp_result = {}
+                try:
+                    for i in range(repetitions):
+                        if sparsifier==SparseComputation:
+                            sc = sparsifier(dimReducer=apca, gridResolution=gridRes*2)
+                        else:
+                            sc = sparsifier(dimReducer=apca, gridResolution=gridRes)
 
-                    dict_append(exp_result, 'time', end-start)
-                    dict_append(exp_result, 'pairs', len(pairs))
-                    del pairs
-                    for key, val in sc.stats.items():
-                        dict_append(exp_result, key, val)
+                        start = timer()
+                        pairs = sc.get_similar_indices(features, statistics=True, seed = i+1)
+                        end = timer()
 
-                exp_result['status'] = 'successful'
-            except MemoryError:
-                exp_result['status'] = 'failed'
-            set_key(results, [serialize(dataset), serialize(sparsifier), gridRes], exp_result)
+                        dict_append(exp_result, 'time', end-start)
+                        dict_append(exp_result, 'pairs', len(pairs))
+                        del pairs
+                        for key, val in sc.stats.items():
+                            dict_append(exp_result, key, val)
 
-            # dump results
-            with open(results_file, 'w') as f:
-                json.dump(results, f)
+                    exp_result['status'] = 'successful'
+                except MemoryError:
+                    exp_result['status'] = 'failed'
+                set_key(results, [serialize(dataset), serialize(sparsifier), gridRes, n_dim], exp_result)
+
+                # dump results
+                with open(results_file, 'w') as f:
+                    json.dump(results, f)
 #%%
