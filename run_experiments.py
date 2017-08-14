@@ -1,5 +1,5 @@
 #%%
-from sparse_experiments.datasets import covertype, rlc, adult, le1, le2, neuron, ringnorm, checker, bow1, bow2
+from sparse_experiments.datasets import covertype, rlc, adult, le1, neuron, ringnorm, checker, bow1, bow2
 from sparsecomputation import SparseComputation, SparseShiftedComputation, SparseHybridComputation, ApproximatePCA
 from timeit import default_timer as timer
 import numpy as np
@@ -9,6 +9,18 @@ import time
 #%%
 def serialize(x):
     return x.__name__.split('.')[-1]
+#%%
+
+for dataset in [ringnorm, bow2, bow1]:
+    features, labels = dataset.load_data()
+    sorted_idx = np.lexsort(features.T)
+    sorted_data =  features[sorted_idx,:]
+    row_mask = np.append([True],np.any(np.diff(sorted_data,axis=0),1))
+    features = sorted_data[row_mask]
+    print(dataset.__name__)
+    print(features.shape)
+    del features
+
 #%%
 year = time.strftime("%Y")
 month = time.strftime("%m")
