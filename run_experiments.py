@@ -5,11 +5,15 @@ from timeit import default_timer as timer
 import numpy as np
 import json
 import sys
+import time
 #%%
 def serialize(x):
     return x.__name__.split('.')[-1]
 #%%
-results_file = 'results.json'
+year = time.strftime("%Y")
+month = time.strftime("%m")
+day = time.strftime("%d")
+results_file = 'results_' + year + month + day + '.json'
 
 repetitions = 5
 
@@ -17,13 +21,13 @@ gridResolutions = {
     'neuron': [2, 5, 10, 25, 50, 100],
     'le1': [2, 5, 10, 25, 50, 100],
     'le2': [2, 5, 10, 25, 50, 100],
-    'bow1': [2, 5, 10, 25, 50, 100, 250, 500, 1000],
-    'adult': [2, 5, 10, 25, 50, 100, 250, 500, 1000],
-    'covertype': [25, 50, 100, 250, 500, 1000],
-    'checker': [50, 100, 250, 500, 1000],
-    'rlc': [100, 250, 500, 1000, 2000, 5000],
-    'bow2': [100, 250, 500, 1000, 2000, 5000],
-    'ringnorm': [100, 250, 500, 1000, 2000, 5000]
+    'bow1': [10, 25, 50, 100, 250, 500, 1000],
+    'adult': [10, 25, 50, 100, 250, 500, 1000],
+    'covertype': [50, 100, 250, 500, 1000],
+    'checker': [100, 250, 500, 1000],
+    'rlc': [250, 500, 1000, 2000, 5000],
+    'bow2': [250, 500, 1000, 2000, 5000],
+    'ringnorm': [250, 500, 1000, 2000, 5000]
 }
 
 datasets = [neuron, le1, le2, bow1, adult, covertype, checker, rlc, bow2, ringnorm]
