@@ -11,7 +11,7 @@ def serialize(x):
     return x.__name__.split('.')[-1]
 #%%
 
-for dataset in [ringnorm, bow2, bow1]:
+for dataset in [bow2, bow1]:
     features, labels = dataset.load_data()
     sorted_idx = np.lexsort(features.T)
     sorted_data =  features[sorted_idx,:]
