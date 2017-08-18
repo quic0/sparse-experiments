@@ -12,7 +12,7 @@ def load_data(path='BOW2_full.mat'):
 
         data = np.array(f['data']).transpose()
         labels = np.squeeze(np.array(f['classLabels']))
-        data = np.where(data > 0, 1, 0)
+#        data = np.where(data > 0, 1, 0)
 
         return (data, labels)
     else:
