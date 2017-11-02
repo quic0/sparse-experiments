@@ -3,8 +3,8 @@ Licensed under MIT license:
 
 COPYRIGHT
 
-All contributions by François Chollet:
-Copyright (c) 2015, François Chollet.
+All contributions by Francois Chollet:
+Copyright (c) 2015, Francois Chollet.
 All rights reserved.
 
 All contributions by Google:
